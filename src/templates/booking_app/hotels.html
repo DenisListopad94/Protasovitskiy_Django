@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}information about hotels{% endblock %}
+
+{% block content %}
+    <h2> some information about hotels </h2>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">name</th>
+      <th scope="col">address</th>
+      <th scope="col">stars</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for hotel in hotels %}
+    <tr>
+      <th scope="row">{{hotel.name}}</th>
+      <td>{{hotel.address}}</td>
+      <td>{{hotel.stars}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+    </table>
+{% endblock %}
