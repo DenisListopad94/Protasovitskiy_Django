@@ -1,87 +1,40 @@
-1)	Создать 2 модели Persons(пример из аудиторного занятия) и
-Hotels( name models.Charfield(maxlength =40),
-    stars models.IntegerField,
-    address models.Charfield(maxlength =40),
-    city models.Charfield(maxlength =40),
-    phone= models.Charfield(maxlength = 40))
-Не забываем сделать миграции!
+Задание:
+1)	Создать диаграмму зависимости моделей ORM с помощью сайта: https://yuml.me/
+2)	По нарисованной диаграмме создать модели и связать их внешними ключами.
+3)	Проработать логику проекта, добавив необходимые ограничения.
+4)	Зарегистрировать модели в файле admin.py
+5)	Добавить 8-10 объектов для каждой модели в проекте. Добавить отель по названию “B&B”
+6)	Вывести всех пользователей старше 30 которые были в отеле  B&B
 
-2)	Ввести 10 разных отелей с разным количеством звёзд и разных городах
-In [1]: Hotels
-Out[1]: booking_app.models.Hotels
+In [1]: persons = Persons.objects.filter(age__gt=30, booking_info__hotels__name='B&B')
 
-In [2]: hotel = Hotels.objects.create(name="Bug",stars=3,city="Brest")
+In [2]: for person in persons:
+   ...:     print(person.first_name, person.last_name)
+   ...:
 
-In [3]: hotel2 = Hotels.objects.create(name="Goryn",stars=2,city="Brest")
+7)	Вывести первых 5 девушек у которых больше 3 хобби.
 
-In [4]: hotel3 = Hotels.objects.create(name="Lesnoi",stars=2,city="Brest")
+In [2]: persons = Persons.objects.filter(sex='f', hobbies__gt=3)[:5]
 
-In [5]: hotel4 = Hotels.objects.create(name="President",stars=5,city="Minsk")
+In [3]: for person in persons:
+   ...:     print(person.first_name, person.last_name)
+   ...:
 
-In [6]: hotel5 = Hotels.objects.create(name="Vitba",stars=4,city="Vitebsk")
+8)	Вывести все заведения с максимальным рейтингом в 5 звёзд.
 
-In [7]: hotel6 = Hotels.objects.create(name="Mir",stars=2,city="Gomel")
+In [6]: hotels = Hotels.objects.filter(stars=5)
 
-In [8]: hotel7 = Hotels.objects.create(name="Rodina",stars=3,city="Mogilev")
+In [7]: for hotel in hotels:
+   ...:     print(hotel.name)
+   ...:
 
-In [9]: hotel8 = Hotels.objects.create(name="Plaza",stars=4,city="Grodno")
+9)	Вывести все комментарии отеля B&B
+которые сделали пользователи которые в нём остановились и возраст которых от 20 до 30 лет.
 
-In [10]: hotel9 = Hotels.objects.create(name="Eleon",stars=1,city="Minsk")
+In [10]: comments = HotelsComment.objects.filter(hotels__name='B&B',persons__age__range=(20,
+    ...: 30))
 
-In [11]: hotel10 = Hotels.objects.create(name="Druzhba",stars=5,city="Grodno")
+In [11]: for comment in comments:
+    ...:     print(comment.comment)
+    ...:
 
-3)	Ввести 10 разных пользователей разных возрастов
-In [1]: Persons
-Out[1]: booking_app.models.Persons
-
-In [2]: person = Persons.objects.create(first_name="Nick",last_name="Nickson",age=22,sex="m")
-
-In [3]: person2 = Persons.objects.create(first_name="Suzan",last_name="Suzanson",age=32,sex="f")
-
-In [4]: person3 = Persons.objects.create(first_name="Piter",last_name="Piterson",age=42,sex="m")
-
-In [5]: person4 = Persons.objects.create(first_name="Bob",last_name="Bobson",age=28,sex="m")
-
-In [6]: person5 = Persons.objects.create(first_name="Ann",last_name="Annson",age=44,sex="f")
-
-In [7]: person6 = Persons.objects.create(first_name="Sarah",last_name="Sarahson",age=22,sex="f")
-
-In [8]: person7 = Persons.objects.create(first_name="John",last_name="Johnson",age=30,sex="m")
-
-In [9]: person8 = Persons.objects.create(first_name="Steve",last_name="Steveson",age=22,sex="m")
-
-In [10]: person9 = Persons.objects.create(first_name="Brad",last_name="Bradson",age=32,sex="m")
-
-In [11]: person10 = Persons.objects.create(first_name="Alice",last_name="Aliceson",age=22,sex="f")
-
-4)	Вывести всех пользователей сайта.
-
-persons = Persons.objects.all()
-
-In [16]: for person in persons:
-    ...:     print(person.first_name, person.last_name)
-
-
-5)	Вывести все отели, имеющие более 3 звёзд!
-
-In [26]: hotels = Hotels.objects.filter(stars__gt=3)
-
-In [27]: hotels
-
-6)	Вывести тех пользователей которые старше 40 лет а имя начинается на “P”.
-
-In [22]: persons = Persons.objects.filter(age__gt=40).filter(first_name__startswith = "P")
-
-In [23]: persons
-
-7)	Найти всех пользователей которых зовут “Nick” или “Suzan”
-
-In [31]: persons = Persons.objects.filter(first_name__in=["Nick", "Suzan"])
-
-In [32]: persons
-
-8)	Вывести первых 5 самых младших людей на сайте.
-
-In [34]: persons = Persons.objects.order_by("age")[:5]
-
-In [35]: persons
