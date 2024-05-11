@@ -5,7 +5,9 @@ from .models import (
     Hobbies,
     Profile,
     BookOrderInfo,
-    HotelsComment
+    HotelsComment,
+    User,
+    PersonComment
 )
 from django.contrib import admin
 
@@ -17,3 +19,5 @@ admin.site.register(Hobbies)
 admin.site.register(Profile)
 admin.site.register(BookOrderInfo)
 admin.site.register(HotelsComment)
+admin.site.register(User)
+admin.site.register(PersonComment)

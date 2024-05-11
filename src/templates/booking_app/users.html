@@ -6,17 +6,23 @@
     <table class="table">
   <thead>
     <tr>
-      <th scope="col">name</th>
+      <th scope="col">first_name</th>
+      <th scope="col">last_name</th>
       <th scope="col">age</th>
-      <th scope="col">comment</th>
+      <th scope="col">sex</th>
+      <th scope="col">hobbies</th>
     </tr>
   </thead>
   <tbody>
   {% for user in users %}
     <tr>
-      <th scope="row">{{user.name}}</th>
+      <th scope="row">{{user.first_name}}</th>
+      <td>{{user.last_name}}</td>
       <td>{{user.age}}</td>
-      <td>{{user.comment}}</td>
+      <td>{{user.sex}}</td>
+      {% for hobby in user.hobbies.all %}
+      <td>{{ hobby.name }}</td>
+      {% endfor %}
     </tr>
   {% endfor %}
   </tbody>

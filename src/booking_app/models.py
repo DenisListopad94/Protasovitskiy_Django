@@ -2,23 +2,9 @@ from django.db import models
 
 
 # Create your models here.
-class Persons(models.Model):
-    SEX_PERSON = {
-        "m": "male",
-        "f": "female",
-    }
-    first_name = models.CharField(max_length=30, null=True)
-    last_name = models.CharField(max_length=50)
-    age = models.PositiveIntegerField()
-    sex = models.CharField(max_length=1, choices=SEX_PERSON)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f" {self.first_name} {self.last_name}"
 
 
-class HotelOwner(models.Model):
+class User(models.Model):
     SEX_PERSON = {
         "m": "male",
         "f": "female",
@@ -26,44 +12,72 @@ class HotelOwner(models.Model):
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
     age = models.PositiveIntegerField(null=True)
-    sex = models.CharField(max_length=1, choices=SEX_PERSON)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    sex = models.CharField(max_length=1, choices=SEX_PERSON, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["first_name"], name="first_name_idx"),
+            models.Index(fields=["last_name"], name="last_name_idx"),
+            models.Index(fields=["age"], name="age_idx"),
+            models.Index(fields=["sex"], name="sex_idx"),
+        ]
 
     def __str__(self):
         return f" {self.first_name} {self.last_name}"
 
 
+class Persons(User):
+    guest_rating = models.IntegerField(null=True)
+
+
+class HotelOwner(User):
+    owner_exp_status = models.IntegerField(null=True)
+
+
 class Hotels(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, null=True)
     stars = models.IntegerField(null=True)
-    address = models.CharField(max_length=40)
-    city = models.CharField(max_length=40)
-    phone = models.CharField(max_length=40)
+    address = models.CharField(max_length=40, null=True)
+    city = models.CharField(max_length=40, null=True)
+    phone = models.CharField(max_length=40, null=True)
     owners = models.ForeignKey(
         to="HotelOwner",
         on_delete=models.SET_NULL,
         null=True,
         related_name="hotels",
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["name"], name="name_idx"),
+            models.Index(fields=["stars"], name="stars_idx"),
+            models.Index(fields=["city"], name="city_idx"),
+        ]
 
     def __str__(self):
-        return f" {self.name} {self.address}"
+        return f" {self.name} "
+
+
+class Comment(models.Model):
+    comment = models.CharField(max_length=200, null=True)
+    comment_time = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        abstract = True
 
 
 class Hobbies(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, null=True)
     experience = models.IntegerField(null=True)
     owners = models.ManyToManyField(
-        to="HotelOwner",
+        to="User",
         related_name="hobbies"
     )
-    persons = models.ManyToManyField(
-        to="Persons",
-        related_name="hobbies"
-    )
+
+    def __str__(self):
+        return f" {self.name}"
 
 
 class Profile(models.Model):
@@ -71,13 +85,7 @@ class Profile(models.Model):
     id_card_number = models.IntegerField(null=True)
     serial = models.FloatField(null=True)
     persons = models.OneToOneField(
-        to="Persons",
-        on_delete=models.CASCADE,
-        null=True,
-        related_name="profile"
-    )
-    hotel_owners = models.OneToOneField(
-        to="HotelOwner",
+        to="User",
         on_delete=models.CASCADE,
         null=True,
         related_name="profile"
@@ -101,9 +109,8 @@ class BookOrderInfo(models.Model):
     )
 
 
-class HotelsComment(models.Model):
-    comment = models.CharField(max_length=200, null=True)
-    time_comment = models.DateTimeField(auto_now_add=True)
+class HotelsComment(Comment):
+    hotel_rating = models.PositiveIntegerField(null=True)
     hotels = models.ForeignKey(
         to="Hotels",
         on_delete=models.SET_NULL,
@@ -115,6 +122,25 @@ class HotelsComment(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="hotel_comments"
+    )
+
+    def __str__(self):
+        return f" {self.comment}"
+
+
+class PersonComment(Comment):
+    person_rating = models.PositiveIntegerField(null=True)
+    hotels = models.ForeignKey(
+        to="Hotels",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="person_comments"
+    )
+    persons = models.ForeignKey(
+        to="Persons",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="person_comments"
     )
 
     def __str__(self):

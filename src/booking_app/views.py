@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Hotels
+from .models import Persons
 
 
 # Create your views here.
@@ -17,28 +19,9 @@ def home_view(request):
                   )
 
 
-hotels = [
-    {
-        "name": "Bug",
-        "address": "Bugskaya str.",
-        "stars": 4,
-    },
-    {
-        "name": "Goryn",
-        "address": "Gorynskaya str.",
-        "stars": 3,
-    },
-    {
-        "name": "Lesnoi",
-        "address": "Lesnaya str.",
-        "stars": 2,
-    },
-]
-
-
 def hotels_view(request):
     context = {
-        "hotels": hotels
+        "hotels": Hotels.objects.filter(stars=5).prefetch_related("hotel_comments")
     }
     return render(request=request,
                   template_name="hotels.html",
@@ -46,28 +29,9 @@ def hotels_view(request):
                   )
 
 
-users = [
-    {
-        "name": "Bob",
-        "age": 20,
-        "comment": "Good",
-    },
-    {
-        "name": "Bill",
-        "age": 22,
-        "comment": "Bad",
-    },
-    {
-        "name": "Ann",
-        "age": 23,
-        "comment": "Great",
-    },
-]
-
-
 def users_view(request):
     context = {
-        "users": users
+        "users": Persons.objects.all().prefetch_related("hobbies")
     }
     return render(request=request,
                   template_name="users.html",
