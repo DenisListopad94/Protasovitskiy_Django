@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}information about hotels{% endblock %}
+
+{% block content %}
+    <h2> some information about hotels </h2>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">name</th>
+      <th scope="col">stars</th>
+      <th scope="col">address</th>
+      <th scope="col">city</th>
+      <th scope="col">phone</th>
+      <th scope="col">owners</th>
+      <th scope="col">comments</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for hotel in hotels %}
+    <tr>
+      <th scope="row">{{hotel.name}}</th>
+      <td>{{hotel.stars}}</td>
+      <td>{{hotel.address}}</td>
+      <td>{{hotel.city}}</td>
+      <td>{{hotel.phone}}</td>
+      <td>{{hotel.owners}}</td>
+     {% for comment in hotel.hotel_comments.all %}
+      <td>{{ comment.comment }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+    </table>
+{% endblock %}
