@@ -9,7 +9,9 @@ from .models import (
     BookOrderInfo,
     HotelsComment,
     User,
-    PersonComment
+    PersonComment,
+    Room,
+    Booking
 )
 
 
@@ -148,3 +150,5 @@ admin.site.register(BookOrderInfo, BookOrderInfoAdmin)
 admin.site.register(HotelsComment, HotelsCommentAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(PersonComment, PersonCommentAdmin)
+admin.site.register(Room)
+admin.site.register(Booking)
