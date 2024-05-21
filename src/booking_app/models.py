@@ -145,3 +145,16 @@ class PersonComment(Comment):
 
     def __str__(self):
         return f" {self.comment}"
+
+
+class Room(models.Model):
+    hotel = models.ForeignKey(Hotels, related_name='rooms', on_delete=models.CASCADE)
+    number = models.CharField(max_length=10)
+    is_booked = models.BooleanField(default=False)
+
+
+class Booking(models.Model):
+    room = models.ForeignKey(Room, related_name='bookings', on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    customer_full_name = models.CharField(max_length=255)
