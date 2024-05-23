@@ -1,23 +1,17 @@
-1)	Изучить детально понятие ACID. В частности про уровни изоляции.
-2)	Читаем про deadlock
-3)	Создать следующие модели для бронирования комнат в отеле и сделать миграции:
+1)	Создать форму для добавления пользователей.
+2)	Создать валидаторы для проверки возраста.
+Возраст пользователя должен быть от 18 до 90 лет.
+3)	Добавить форму для feedback о отелях в ней изменить виджеты
+с Textinput на Textarea и установить bootsrap5 стили оформления для нашей формы.
+4)	Подключить Django-crispy-forms в наш текущий проект
+5)	Вывести всех пользователей старше 30 которые любят спорт!
 
-class Room(models.Model):
-    hotel = models.ForeignKey(Hotel, related_name='rooms', on_delete=models.CASCADE)
-    number = models.CharField(max_length=10)
-    is_booked = models.BooleanField(default=False)
+users = Persons.objects.filter(age__gt=30,hobbies__name="Sport").annotate(Count('hobbies'))
+users
 
-class Booking(models.Model):
-    room = models.ForeignKey(Room, related_name='bookings', on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    customer_full_name = models.CharField(max_length=255)
+6)	Вывести первых 5 пользователей у которых больше 3 хобби.
 
-4)	Создать view и url для сохранения в базу информации о бронировании в отеле.
-В параметре пути передать название отеля и id пользователя и номер в отеле
-который хочет забронировать( в дальнейшем это будет реализовано через форму).
-Получить информацию о пользователе и о отеле.
-В случае не существования пользователя или отеля вывести ошибки в консоль.
-Далее транзакционно бронируем комнату в отеле,
-в случае если данная комната уже забронирована сообщаем
-об этом пользователю и откатываем транзакцию.
+users_3_hobbies = Persons.objects.annotate(Count('hobbies')).filter(hobbies__gt=3)[:5]
+users_3_hobbies
+
+

@@ -1,5 +1,7 @@
 from django.db import models
 
+from .validators import validate_users_age
+
 
 # Create your models here.
 
@@ -11,7 +13,7 @@ class User(models.Model):
     }
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    age = models.PositiveIntegerField(null=True)
+    age = models.PositiveIntegerField(null=True, validators=[validate_users_age])
     sex = models.CharField(max_length=1, choices=SEX_PERSON, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

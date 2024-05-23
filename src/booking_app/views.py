@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from .forms import UserModelForm, HotelsCommentForm
 from .models import (
     Hotels,
     User,
@@ -94,4 +96,42 @@ def book_room(request, hotel_name, user_id, room_number):
             'user_id': user_id,
             'room_number': room_number
         }
+    )
+
+
+def user_add_form(request):
+    if request.method == "POST":
+        user_form = UserModelForm(request.POST)
+        if user_form.is_valid():
+            user_form.save()
+        return HttpResponseRedirect(reverse("users"))
+    else:
+        user_form = UserModelForm()
+    context = {
+        "form": user_form
+    }
+
+    return render(
+        request=request,
+        template_name="user_add_form.html",
+        context=context
+    )
+
+
+def hotel_comment_add_form(request):
+    if request.method == "POST":
+        comment_form = HotelsCommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+        return HttpResponseRedirect(reverse("hotels"))
+    else:
+        comment_form = HotelsCommentForm()
+    context = {
+        "form": comment_form
+    }
+
+    return render(
+        request=request,
+        template_name="hotel_comment_add.html",
+        context=context
     )

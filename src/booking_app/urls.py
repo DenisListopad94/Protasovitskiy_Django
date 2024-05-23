@@ -7,6 +7,8 @@ from .views import (
     hotels_view,
     users_view,
     book_room,
+    user_add_form,
+    hotel_comment_add_form,
 )
 urlpatterns = [
     path('site_rules/', site_rules),
@@ -16,4 +18,6 @@ urlpatterns = [
     path('hotels/', hotels_view, name='hotels'),
     path('users/', users_view, name='users'),
     path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/', book_room, name='book_room'),
+    path('user_add', user_add_form, name="user_add"),
+    path('comment_add', hotel_comment_add_form, name="comment_add"),
 ]
