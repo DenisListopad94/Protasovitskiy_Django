@@ -9,15 +9,20 @@ from .views import (
     book_room,
     user_add_form,
     hotel_comment_add_form,
+    HotelsTemplateView,
+    PersonsListView,
+    UserFormView,
+    HotelCommentFormView,
 )
+
 urlpatterns = [
     path('site_rules/', site_rules),
     path('all_establishments/', all_establishments),
     path('home/', home_view, name='home'),
     path('user_comment/', user_comment_view, name='user_comment'),
-    path('hotels/', hotels_view, name='hotels'),
-    path('users/', users_view, name='users'),
+    path('hotels/', HotelsTemplateView.as_view(), name='hotels'),
+    path('users/', PersonsListView.as_view(), name='users'),
     path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/', book_room, name='book_room'),
-    path('user_add', user_add_form, name="user_add"),
-    path('comment_add', hotel_comment_add_form, name="comment_add"),
+    path('user_add', UserFormView.as_view(), name="user_add"),
+    path('comment_add', HotelCommentFormView.as_view(), name="comment_add"),
 ]

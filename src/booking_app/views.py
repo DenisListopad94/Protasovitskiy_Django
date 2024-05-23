@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, ListView, CreateView
+
 from .forms import UserModelForm, HotelsCommentForm
 from .models import (
     Hotels,
@@ -30,12 +32,21 @@ def home_view(request):
 
 def hotels_view(request):
     context = {
-        "hotels": Hotels.objects.filter(stars=5).prefetch_related("hotel_comments")
+        "hotels": Hotels.objects.all().prefetch_related("hotel_comments")
     }
     return render(request=request,
                   template_name="hotels.html",
                   context=context
                   )
+
+
+class HotelsTemplateView(TemplateView):
+    template_name = "hotels.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["hotels"] = Hotels.objects.all()
+        return context
 
 
 def users_view(request):
@@ -46,6 +57,14 @@ def users_view(request):
                   template_name="users.html",
                   context=context
                   )
+
+
+class PersonsListView(ListView):
+    template_name = "users.html"
+    model = Persons
+    # queryset = Persons.objects.all()
+    context_object_name = "users"
+    paginate_by = 10
 
 
 def user_comment_view(request):
@@ -118,6 +137,12 @@ def user_add_form(request):
     )
 
 
+class UserFormView(CreateView):
+    template_name = "user_add_form.html"
+    form_class = UserModelForm
+    success_url = reverse_lazy("users")
+
+
 def hotel_comment_add_form(request):
     if request.method == "POST":
         comment_form = HotelsCommentForm(request.POST)
@@ -135,3 +160,9 @@ def hotel_comment_add_form(request):
         template_name="hotel_comment_add.html",
         context=context
     )
+
+
+class HotelCommentFormView(CreateView):
+    template_name = "hotel_comment_add.html"
+    form_class = HotelsCommentForm
+    success_url = reverse_lazy("hotels")
