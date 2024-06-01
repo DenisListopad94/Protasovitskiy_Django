@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load cache %}
 {% block title %}booking app{% endblock %}
 
 {% block content %}
-    <h2> general information about site operation and features </h2>
+    {% cache 1200 general_information %}
+        <h2> general information about site operation and features </h2>
+    {% endcache %}
 {% endblock %}

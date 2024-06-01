@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from .forms import UserModelForm, HotelsCommentForm
@@ -46,6 +48,10 @@ class HotelsTemplateView(PermissionRequiredMixin, TemplateView):
     permission_required = ["booking_app.view_hotels"]
     template_name = "hotels.html"
 
+    @method_decorator(cache_page(30 * 60))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["hotels"] = Hotels.objects.all()
@@ -69,6 +75,10 @@ class PersonsListView(PermissionRequiredMixin, ListView):
     # queryset = Persons.objects.all()
     context_object_name = "users"
     paginate_by = 10
+
+    @method_decorator(cache_page(30 * 60))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
 @login_required(login_url="/admin/login/")
