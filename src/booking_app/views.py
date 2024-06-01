@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from .forms import UserModelForm, HotelsCommentForm
 from .models import (
     Hotels,
@@ -20,6 +21,7 @@ def site_rules(request):
     return HttpResponse("Правила сайта")
 
 
+@login_required(login_url="/admin/login/")
 def all_establishments(request):
     return HttpResponse("Все заведения")
 
@@ -40,7 +42,8 @@ def hotels_view(request):
                   )
 
 
-class HotelsTemplateView(TemplateView):
+class HotelsTemplateView(PermissionRequiredMixin, TemplateView):
+    permission_required = ["booking_app.view_hotels"]
     template_name = "hotels.html"
 
     def get_context_data(self, **kwargs):
@@ -59,7 +62,8 @@ def users_view(request):
                   )
 
 
-class PersonsListView(ListView):
+class PersonsListView(PermissionRequiredMixin, ListView):
+    permission_required = ["booking_app.view_persons"]
     template_name = "users.html"
     model = Persons
     # queryset = Persons.objects.all()
@@ -67,6 +71,7 @@ class PersonsListView(ListView):
     paginate_by = 10
 
 
+@login_required(login_url="/admin/login/")
 def user_comment_view(request):
     return render(request=request,
                   template_name="user_comment.html",

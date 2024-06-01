@@ -1,12 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework import status
 from booking_app.models import HotelOwner
 from .serializers import HotelOwnerSerializer
 from django.http import Http404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
-class HotelOwnerList(APIView):
+class HotelOwnerList(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         owners = HotelOwner.objects.all()
         serializer = HotelOwnerSerializer(owners, many=True)

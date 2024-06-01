@@ -1,13 +1,38 @@
-1)	Создайте классы представления для вывода шаблонов при помощи  TemplateView,
-там где требуется просто вывести шаблон и не выводить данные модели.
-2)	Создайте классы представлений DetailView и ListView для вывода данных  модели в шаблон.
-При необходимости фильтрации  данных, используйте get_queryset() метод или queryset атрибут.
-В одном классе представления реализуйте пагинацию.
-3)	Создайте классы представлений CreateView для заполнения форм данными,
-связанными с моделью и FormView для форм не связанных с моделью.
-5)	Создайте REST приложение, для тестирования и интеграции API.
-Пропишите необходимые настройки в конфигурационном файле вашего проекта.
-6)	Для вывода информации о созданных вами владельцев отелей напишите сериализатор
-не привязанный к модели! Внутри сериализатора определите create и update методы.
-7)	С помощью сериализатора из предыдущего задания реализуйте 4 класса представления(наследуясь от APIView),
-которые реализуют четыре основных запроса GET/POST/PUT/DELETE.
+1)	Создать несколько пользователей через админ панель Django
+и дать разрешения на просмотр и изменения различных моделей
+
+2)	Создать одного пользователя через Django shell, наделить его правами staff и active,
+а также дать доступ к добавлению и просмотру всех отелей и комментариев пользователей.
+
+user = User.objects.create_user("Stepan", "stepanov@mail.ru", "parol12345")
+user.first_name = "Stepan"
+user.last_name = "Stepanov"
+user.is_staff = True
+user.is_active = True
+user.save()
+add_hotels = Permission.objects.get(codename="add_hotels")
+view_hotels = Permission.objects.get(codename="view_hotels")
+add_hotels_comment = Permission.objects.get(codename="add_hotelscomment")
+view_hotels_comment = Permission.objects.get(codename="view_hotelscomment")
+user.user_permissions.add(add_hotels, view_hotels, add_hotels_comment, view_hotels_comment)
+user.save()
+
+3)	Создать группу через Django shell. В группу добавить возможность добавлять изменять
+удалять и просматривать владельцев отелей. Через shell,
+наделить правами этой группы одного из пользователей, созданных в первом задании.
+
+hotelowner_group = Group.objects.create(name="Hotel owner group")
+add_hotelowner = Permission.objects.get(codename="add_hotelowner")
+change_hotelowner = Permission.objects.get(codename="change_hotelowner")
+delete_hotelowner = Permission.objects.get(codename='delete_hotelowner')
+view_hotelowner = Permission.objects.get(codename="view_hotelowner")
+hotelowner_group.permissions.add(add_hotelowner, change_hotelowner, delete_hotelowner, view_hotelowner)
+user = User.objects.get(username="Mihail")
+user.groups.add(hotelowner_group)
+user.save()
+
+4)	Через login_required дать доступ к некотором вьюшкам, только для аутентифицированных пользователей,
+а также через permission_requiered  проверить права для просмотра отелей и пользователей
+
+5)	В DRF настроить базовую аутентифицикацию через токены.
+Получить токен разными способами и просмотреть данные.
