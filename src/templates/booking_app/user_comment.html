@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load cache %}
 {% block title %}users comments{% endblock %}
 
 {% block content %}
-    <h2> some users comments </h2>
+    {% cache 1200 users_comments %}
+        <h2> some users comments </h2>
+    {% endcache %}
 {% endblock %}
