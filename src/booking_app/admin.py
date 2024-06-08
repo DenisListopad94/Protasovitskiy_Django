@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.utils.safestring import mark_safe
 from .models import (
     Persons,
     HotelOwner,
@@ -15,7 +15,12 @@ from .models import (
 )
 
 
-# Register your models here.
+@admin.display(description='фото')
+def get_html_photo(objects):
+    if objects.photo:
+        return mark_safe(f'<img src={objects.photo.url} width=50>')
+
+
 class PersonCommentInline(admin.StackedInline):
     model = PersonComment
 
@@ -81,7 +86,7 @@ class HotelsCommentInline(admin.TabularInline):
 
 
 class HotelsAdmin(admin.ModelAdmin):
-    list_display = ["name", "stars", "address", "city", "phone", "owners"]
+    list_display = ["name", "stars", "address", "city", "phone", "owners", get_html_photo]
     search_fields = ["name", "address", "city"]
     list_filter = ["name", "stars", "address", "city"]
     inlines = [
@@ -112,7 +117,7 @@ class HobbiesAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["photo", "id_card_number", "serial", "persons"]
+    list_display = [get_html_photo, "id_card_number", "serial", "persons"]
 
 
 class BookOrderInfoAdmin(admin.ModelAdmin):

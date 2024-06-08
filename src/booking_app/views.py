@@ -6,7 +6,7 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from .forms import UserModelForm, HotelsCommentForm
+from .forms import UserModelForm, HotelsCommentForm, ProfileAddForm, HotelAddForm
 from .models import (
     Hotels,
     User,
@@ -48,9 +48,9 @@ class HotelsTemplateView(PermissionRequiredMixin, TemplateView):
     permission_required = ["booking_app.view_hotels"]
     template_name = "hotels.html"
 
-    @method_decorator(cache_page(30 * 60))
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(cache_page(30 * 60))
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -74,11 +74,11 @@ class PersonsListView(PermissionRequiredMixin, ListView):
     model = Persons
     # queryset = Persons.objects.all()
     context_object_name = "users"
-    paginate_by = 10
+    paginate_by = 7
 
-    @method_decorator(cache_page(30 * 60))
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(cache_page(30 * 60))
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
 
 @login_required(login_url="/admin/login/")
@@ -180,4 +180,53 @@ def hotel_comment_add_form(request):
 class HotelCommentFormView(CreateView):
     template_name = "hotel_comment_add.html"
     form_class = HotelsCommentForm
+    success_url = reverse_lazy("hotels")
+
+
+def profile_add_form(request):
+    if request.method == "POST":
+        profile_form = ProfileAddForm(request.POST, request.FILES)
+        if profile_form.is_valid():
+            profile_form.save()
+        return HttpResponseRedirect(reverse("users"))
+    else:
+        profile_form = ProfileAddForm()
+    context = {
+        "form": profile_form
+    }
+
+    return render(
+        request=request,
+        template_name="profile_add_form.html",
+        context=context
+    )
+
+
+class ProfileAddFormView(CreateView):
+    template_name = "profile_add_form.html"
+    form_class = ProfileAddForm
+    success_url = reverse_lazy("users")
+
+
+def hotels_add_form(request):
+    if request.method == "POST":
+        form = HotelAddForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("hotels"))
+    else:
+        form = HotelAddForm()
+    context = {
+        "form": form
+    }
+    return render(
+        request=request,
+        template_name="hotels_add_form.html",
+        context=context
+    )
+
+
+class HotelsAddFormView(CreateView):
+    template_name = "hotels_add_form.html"
+    form_class = HotelAddForm
     success_url = reverse_lazy("hotels")

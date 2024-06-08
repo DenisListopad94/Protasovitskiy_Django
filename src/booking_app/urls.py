@@ -13,6 +13,8 @@ from .views import (
     PersonsListView,
     UserFormView,
     HotelCommentFormView,
+    ProfileAddFormView,
+    HotelsAddFormView,
 )
 
 urlpatterns = [
@@ -25,4 +27,6 @@ urlpatterns = [
     path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/', book_room, name='book_room'),
     path('user_add', UserFormView.as_view(), name="user_add"),
     path('comment_add', HotelCommentFormView.as_view(), name="comment_add"),
+    path('profile_add', ProfileAddFormView.as_view(), name="profile_add"),
+    path('hotels_add', HotelsAddFormView.as_view(), name="hotels_add"),
 ]
