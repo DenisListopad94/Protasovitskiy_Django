@@ -161,3 +161,10 @@ class Booking(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     customer_full_name = models.CharField(max_length=255)
+
+
+class Queue(models.Model):
+    value = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        return f"{self.value}"
