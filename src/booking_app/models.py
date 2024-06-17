@@ -1,5 +1,7 @@
 from django.db import models
 
+from .validators import validate_users_age
+
 
 # Create your models here.
 
@@ -11,7 +13,7 @@ class User(models.Model):
     }
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    age = models.PositiveIntegerField(null=True)
+    age = models.PositiveIntegerField(null=True, validators=[validate_users_age])
     sex = models.CharField(max_length=1, choices=SEX_PERSON, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -42,6 +44,7 @@ class Hotels(models.Model):
     address = models.CharField(max_length=40, null=True)
     city = models.CharField(max_length=40, null=True)
     phone = models.CharField(max_length=40, null=True)
+    photo = models.ImageField(null=True, upload_to="hotels_photo/")
     owners = models.ForeignKey(
         to="HotelOwner",
         on_delete=models.SET_NULL,
@@ -81,7 +84,7 @@ class Hobbies(models.Model):
 
 
 class Profile(models.Model):
-    photo = models.ImageField(null=True, blank=True)
+    photo = models.ImageField(null=True, blank=True, upload_to="profile_photo/")
     id_card_number = models.IntegerField(null=True)
     serial = models.FloatField(null=True)
     persons = models.OneToOneField(
@@ -145,3 +148,23 @@ class PersonComment(Comment):
 
     def __str__(self):
         return f" {self.comment}"
+
+
+class Room(models.Model):
+    hotel = models.ForeignKey(Hotels, related_name='rooms', on_delete=models.CASCADE)
+    number = models.CharField(max_length=10)
+    is_booked = models.BooleanField(default=False)
+
+
+class Booking(models.Model):
+    room = models.ForeignKey(Room, related_name='bookings', on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    customer_full_name = models.CharField(max_length=255)
+
+
+class Queue(models.Model):
+    value = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        return f"{self.value}"
