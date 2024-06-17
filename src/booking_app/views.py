@@ -16,6 +16,8 @@ from .models import (
 )
 from django.db import transaction
 from datetime import datetime
+from .tasks import debug_task_1
+from .tasks import debug_task_2
 
 
 # Create your views here.
@@ -25,10 +27,12 @@ def site_rules(request):
 
 @login_required(login_url="/admin/login/")
 def all_establishments(request):
+    debug_task_1.delay(20)
     return HttpResponse("Все заведения")
 
 
 def home_view(request):
+    debug_task_2.delay(15)
     return render(request=request,
                   template_name="home.html"
                   )
@@ -62,6 +66,7 @@ def users_view(request):
     context = {
         "users": Persons.objects.all().prefetch_related("hobbies")
     }
+
     return render(request=request,
                   template_name="users.html",
                   context=context
