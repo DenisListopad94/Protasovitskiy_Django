@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Profile add form{% endblock %}
+
+{% block content %}
+
+
+    <form enctype="multipart/form-data" action="/booking/profile_add" method="POST">
+
+        {% csrf_token %}
+        {{ form | crispy }}
+    <input type="submit" value="OK">
+    </form>
+
+{% endblock %}
